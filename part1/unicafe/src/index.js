@@ -3,6 +3,37 @@ import ReactDOM from 'react-dom';
 
 const Button = ({ event, text }) => <button onClick={event}>{text}</button>;
 
+const Stastitic = ({ value, text, unit }) => {
+    return (
+        <>
+            <p>
+                {text} {value} {unit}
+            </p>
+        </>
+    );
+};
+
+const Statistics = ({ good, bad, neutral }) => {
+    const total = good + bad + neutral;
+    const average = (bad * -1 + good * 1 + neutral * 0) / total;
+    const positive = (good / total) * 100;
+
+    if (good === 0 && bad === 0 && neutral === 0) {
+        return 'Nothing here yet';
+    }
+
+    return (
+        <>
+            <Stastitic text="good" value={good} />
+            <Stastitic text="neutral" value={neutral} />
+            <Stastitic text="bad" value={bad} />
+            <Stastitic text="all" value={total} />
+            <Stastitic text="average" value={average} />
+            <Stastitic text="positive" value={positive} unit="%" />
+        </>
+    );
+};
+
 const App = () => {
     // save clicks of each button to its own state
     const [good, setGood] = useState(0);
@@ -19,8 +50,6 @@ const App = () => {
         setBad(bad + 1);
     };
 
-    const total = good + bad + neutral;
-
     return (
         <>
             <h1>Unicafe</h1>
@@ -32,12 +61,7 @@ const App = () => {
             </div>
             <div>
                 <h2>Stats</h2>
-                <p>good {good}</p>
-                <p>neutral {neutral}</p>
-                <p>bad {bad}</p>
-                <p>all {total}</p>
-                <p>average {(bad * -1 + good * 1 + neutral * 0) / total}</p>
-                <p>positive {(good / total) * 100} %</p>
+                <Statistics good={good} bad={bad} neutral={neutral} />
             </div>
         </>
     );
