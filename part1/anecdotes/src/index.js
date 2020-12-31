@@ -4,19 +4,16 @@ import './index.css';
 
 const Button = ({ event, text }) => <button onClick={event}>{text}</button>;
 
-const App = props => {
+const App = ({ anecdotes }) => {
     const [selected, setSelected] = useState(0);
     const [vote, setVote] = useState(
-        new Array(props.anecdotes.length + 1)
-            .join('0')
-            .split('')
-            .map(parseFloat)
+        new Array(anecdotes.length + 1).join('0').split('').map(parseFloat)
     );
 
     const newAnecdote = () => {
-        let index = Math.floor(Math.random() * 6);
+        let index = Math.floor(Math.random() * anecdotes.length);
         while (index === selected) {
-            index = Math.floor(Math.random() * 6);
+            index = Math.floor(Math.random() * anecdotes.length);
         }
         setSelected(index);
     };
@@ -27,15 +24,26 @@ const App = props => {
         setVote(voteCopy);
     };
 
+    const maxValueIndex = vote.reduce(
+        (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
+        0
+    );
+    const maxVoteAnectode = anecdotes[maxValueIndex];
+    const maxVoteAnectodeVotes = vote[maxValueIndex];
+
     return (
-        <div>
-            {props.anecdotes[selected]}
-            <p>
+        <>
+            <h1>Anecdotes</h1>
+            <div>
+                <p>{anecdotes[selected]}</p>
                 <Button event={addVote} text="vote +1" />
                 <Button event={newAnecdote} text="new anecdote" />
-            </p>
-            <p>This anecdote has {vote[selected]} votes</p>
-        </div>
+                <p>This anecdote has {vote[selected]} votes</p>
+            </div>
+            <h2>Anecdote with the most votes</h2>
+            <p>{maxVoteAnectode}</p>
+            <p>- has {maxVoteAnectodeVotes} votes</p>
+        </>
     );
 };
 
