@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import Person from './components/Person';
+import Persons, { Form, Filter } from './components/Helpers';
 
 const App = () => {
     const [persons, setPersons] = useState([
         { name: 'Fredrik Mellberg', number: '123 123' },
-        { name: 'Fred berg', number: '12332344123' },
-        { name: 'Fik M', number: '56138135' },
-        { name: 'fredrik mellberg', number: '8878' },
+        { name: 'Bertram Tran', number: '555 123' },
+        { name: 'Steven Gerrard', number: '123-785 64' },
+        { name: 'Lisa Kudrow', number: '555 234 55' },
     ]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
@@ -40,33 +40,23 @@ const App = () => {
     };
 
     const personsToShow = persons.filter(person => {
-        return person.name.toLowerCase().includes(filter);
+        return person.name.toLowerCase().includes(filter.toLowerCase());
     });
 
     return (
         <>
             <h1>Phonebook</h1>
-            <div>
-                filter: <input value={filter} onChange={handleFilterChange} />
-            </div>
+            <Filter filter={filter} handle={handleFilterChange} />
             <h2>Add person</h2>
-            <form onSubmit={addPerson}>
-                <div>
-                    name: <input value={newName} onChange={handleNameChange} />
-                    <br />
-                    number:{' '}
-                    <input value={newNumber} onChange={handleNumberChange} />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
+            <Form
+                submit={addPerson}
+                name={newName}
+                number={newNumber}
+                handleName={handleNameChange}
+                handleNumber={handleNumberChange}
+            />
             <h2>Numbers</h2>
-            <ul>
-                {personsToShow.map(person => (
-                    <Person key={person.name} person={person} />
-                ))}
-            </ul>
+            <Persons persons={personsToShow} />
         </>
     );
 };
