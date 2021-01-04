@@ -26,39 +26,26 @@ const CountryData = ({ country }) => {
     );
 };
 
-const Countries = ({ countries, filter }) => {
-    const [showCountry, setShowCountry] = useState('');
-    let filteredCountries;
-    let targetCountry;
-    const show = event => {
-        targetCountry = countries.filter(country =>
-            country.name.includes(event.target.value)
-        );
-        setShowCountry(showCountry);
-    };
-    // REWORK EVERYTHING!!!!!!
-    if (showCountry) {
-        filteredCountries = countries.filter(country =>
-            country.name.includes(targetCountry)
-        );
-    } else {
-        filteredCountries = countries.filter(country =>
-            country.name.toLowerCase().includes(filter.toLowerCase())
-        );
-    }
+const Countries = ({ countries }) => {
+    // const [showCountry, setShowCountry] = useState([]);
 
-    if (filteredCountries.length === 1) {
-        return <CountryData country={filteredCountries[0]} />;
-    } else if (showCountry) {
-        return <CountryData country={showCountry[0]} />;
-    } else if (filteredCountries.length <= 10) {
-        return filteredCountries.map(country => (
-            <>
-                <Country key={country.name} country={country} />
-                <button value={country.name} onClick={show}>
-                    show
-                </button>
-            </>
+    // const show = event => {
+    //     let targetCountry = event.target.value;
+
+    //     filteredCountries = countries.filter(country =>
+    //         country.name.includes(targetCountry)
+    //     );
+    //     setShowCountry([targetCountry]);
+    //     console.log('filteredC 1', filteredCountries);
+    //     console.log('showCountry 1', showCountry);
+    // };
+    // REWORK EVERYTHING!!!!!!
+
+    if (countries.length === 1) {
+        return <CountryData country={countries[0]} />;
+    } else if (countries.length <= 10) {
+        return countries.map(country => (
+            <Country key={country.name} country={country} />
         ));
     }
     return 'Too many matches, specify another filter';
@@ -78,7 +65,11 @@ const App = () => {
         setFilter(event.target.value);
     };
 
-    const clickToFilter = country => console.log(country);
+    const filteredCountries = countries.filter(country =>
+        country.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    // const clickToFilter = country => console.log(country);
 
     return (
         <>
@@ -89,10 +80,9 @@ const App = () => {
             </div>
             <div>
                 <Countries
-                    key={countries.name}
-                    countries={countries}
-                    filter={filter}
-                    clickToFilter={clickToFilter}
+                    key={filteredCountries.name}
+                    countries={filteredCountries}
+                    // clickToFilter={clickToFilter}
                 />
             </div>
         </>
