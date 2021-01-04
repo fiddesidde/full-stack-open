@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const Country = ({ country }) => <div>{country.name}</div>;
+const Country = ({ country, handleFilterChange }) => {
+    return (
+        <div>
+            {country.name}{' '}
+            <button value={country.name} onClick={handleFilterChange}>
+                Show
+            </button>
+        </div>
+    );
+};
 
 const Language = ({ language }) => <li>{language}</li>;
 
@@ -26,26 +35,16 @@ const CountryData = ({ country }) => {
     );
 };
 
-const Countries = ({ countries }) => {
-    // const [showCountry, setShowCountry] = useState([]);
-
-    // const show = event => {
-    //     let targetCountry = event.target.value;
-
-    //     filteredCountries = countries.filter(country =>
-    //         country.name.includes(targetCountry)
-    //     );
-    //     setShowCountry([targetCountry]);
-    //     console.log('filteredC 1', filteredCountries);
-    //     console.log('showCountry 1', showCountry);
-    // };
-    // REWORK EVERYTHING!!!!!!
-
+const Countries = ({ countries, handleFilterChange }) => {
     if (countries.length === 1) {
         return <CountryData country={countries[0]} />;
     } else if (countries.length <= 10) {
         return countries.map(country => (
-            <Country key={country.name} country={country} />
+            <Country
+                key={country.name}
+                country={country}
+                handleFilterChange={handleFilterChange}
+            />
         ));
     }
     return 'Too many matches, specify another filter';
@@ -69,8 +68,6 @@ const App = () => {
         country.name.toLowerCase().includes(filter.toLowerCase())
     );
 
-    // const clickToFilter = country => console.log(country);
-
     return (
         <>
             <h1>Countries</h1>
@@ -82,7 +79,7 @@ const App = () => {
                 <Countries
                     key={filteredCountries.name}
                     countries={filteredCountries}
-                    // clickToFilter={clickToFilter}
+                    handleFilterChange={handleFilterChange}
                 />
             </div>
         </>
