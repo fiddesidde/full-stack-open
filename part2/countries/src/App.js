@@ -26,12 +26,39 @@ const CountryData = ({ country }) => {
     );
 };
 
-const Countries = ({ countries }) => {
-    if (countries.length === 1) {
-        return <CountryData country={countries[0]} />;
-    } else if (countries.length <= 10) {
-        return countries.map(country => (
-            <Country key={country.name} country={country} />
+const Countries = ({ countries, filter }) => {
+    const [showCountry, setShowCountry] = useState('');
+    let filteredCountries;
+    let targetCountry;
+    const show = event => {
+        targetCountry = countries.filter(country =>
+            country.name.includes(event.target.value)
+        );
+        setShowCountry(showCountry);
+    };
+    // REWORK EVERYTHING!!!!!!
+    if (showCountry) {
+        filteredCountries = countries.filter(country =>
+            country.name.includes(targetCountry)
+        );
+    } else {
+        filteredCountries = countries.filter(country =>
+            country.name.toLowerCase().includes(filter.toLowerCase())
+        );
+    }
+
+    if (filteredCountries.length === 1) {
+        return <CountryData country={filteredCountries[0]} />;
+    } else if (showCountry) {
+        return <CountryData country={showCountry[0]} />;
+    } else if (filteredCountries.length <= 10) {
+        return filteredCountries.map(country => (
+            <>
+                <Country key={country.name} country={country} />
+                <button value={country.name} onClick={show}>
+                    show
+                </button>
+            </>
         ));
     }
     return 'Too many matches, specify another filter';
@@ -51,9 +78,7 @@ const App = () => {
         setFilter(event.target.value);
     };
 
-    const filteredCountries = countries.filter(country =>
-        country.name.toLowerCase().includes(filter.toLowerCase())
-    );
+    const clickToFilter = country => console.log(country);
 
     return (
         <>
@@ -64,8 +89,10 @@ const App = () => {
             </div>
             <div>
                 <Countries
-                    key={filteredCountries.name}
-                    countries={filteredCountries}
+                    key={countries.name}
+                    countries={countries}
+                    filter={filter}
+                    clickToFilter={clickToFilter}
                 />
             </div>
         </>
