@@ -16,23 +16,67 @@ const Country = ({ country, handleFilterChange }) => {
 const Language = ({ language }) => <li>{language}</li>;
 
 const CountryData = ({ country }) => {
-    return (
-        <>
-            <h2>{country.name}</h2>
-            <div>Capital: {country.capital}</div>
-            <div>Population: {country.population}</div>
-            <h3>Languages</h3>
-            <ul>
-                {country.languages.map(language => (
-                    <Language
-                        key={language.iso639_2}
-                        language={language.name}
+    const [weatherData, setWeatherData] = useState({});
+    useEffect(() => {
+        axios
+            .get(
+                `http://api.weatherstack.com/current?access_key=${process.env.REACT_APP_API_KEY}&query=${country.capital}`
+            )
+            .then(res => setWeatherData(res.data));
+    }, []);
+    console.log('wData', weatherData);
+
+    if (weatherData.current) {
+        return (
+            <>
+                <h2>{country.name}</h2>
+                <div>Capital: {country.capital}</div>
+                <div>Population: {country.population}</div>
+                <h3>Languages</h3>
+                <ul>
+                    {country.languages.map(language => (
+                        <Language
+                            key={language.iso639_2}
+                            language={language.name}
+                        />
+                    ))}
+                </ul>
+                <img src={country.flag} alt="country flag" id="flag" />
+                <h2>Weather in {country.name}</h2>
+                <div>
+                    <p> Temperature: {weatherData.current.temperature} C</p>
+                    <img
+                        src={weatherData.current.weather_icons[0]}
+                        alt="weather symbol"
                     />
-                ))}
-            </ul>
-            <img src={country.flag} alt="country flag" id="flag" />
-        </>
-    );
+                    <p>
+                        Wind: {weatherData.current.wind_speed} m/s{' '}
+                        {weatherData.current.wind_dir}
+                    </p>
+                </div>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <h2>{country.name}</h2>
+                <div>Capital: {country.capital}</div>
+                <div>Population: {country.population}</div>
+                <h3>Languages</h3>
+                <ul>
+                    {country.languages.map(language => (
+                        <Language
+                            key={language.iso639_2}
+                            language={language.name}
+                        />
+                    ))}
+                </ul>
+                <img src={country.flag} alt="country flag" id="flag" />
+                <h2>Weather in {country.name}</h2>
+                <div>Loading ..</div>
+            </>
+        );
+    }
 };
 
 const Countries = ({ countries, handleFilterChange }) => {
