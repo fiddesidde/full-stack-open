@@ -24,7 +24,6 @@ const CountryData = ({ country }) => {
             )
             .then(res => setWeatherData(res.data));
     }, []);
-    console.log('wData', weatherData);
 
     if (weatherData.current) {
         return (
