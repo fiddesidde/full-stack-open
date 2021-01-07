@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Persons, { Form, Filter } from './components/Helpers';
-import axios from 'axios';
+import personService from './services/persons';
 
 const App = () => {
     const [persons, setPersons] = useState([]);
@@ -15,12 +15,11 @@ const App = () => {
     // }, []);
 
     const getPersons = () => {
-        const get = async () => {
-            const res = await axios.get('http://localhost:3001/persons');
-            setPersons(res.data);
-        };
-        get();
+        personService
+            .getAll()
+            .then(currentPersons => setPersons(currentPersons));
     };
+
     useEffect(getPersons, []);
 
     const addPerson = event => {
@@ -35,9 +34,18 @@ const App = () => {
             name: newName,
             number: newNumber,
         };
-        setPersons(persons.concat(personObj));
-        setNewName('');
-        setNewNumber('');
+
+        personService.post(personObj).then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson));
+            setNewName('');
+            setNewNumber('');
+        });
+    };
+
+    const deletePerson = id => {
+        personService.destroy(id).then(() => {
+            setPersons(persons.filter(person => person.id !== id));
+        });
     };
 
     const handleNameChange = event => {
@@ -67,7 +75,7 @@ const App = () => {
                 handleNumber={handleNumberChange}
             />
             <h2>Numbers</h2>
-            <Persons persons={personsToShow} />
+            <Persons persons={personsToShow} deletePerson={deletePerson} />
         </>
     );
 };

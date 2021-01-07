@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Note from './components/Note';
 import noteService from './services/notes';
 
@@ -27,9 +26,6 @@ const App = () => {
             setNotes(notes.concat(returnedNote));
             setNewNote('');
         });
-
-        setNotes(notes.concat(noteObject));
-        setNewNote('');
     };
 
     const toggleImportanceOf = id => {

@@ -27,9 +27,5 @@ const update = (id, newObject) => {
     return request.then(res => res.data);
 };
 
-export default {
-    // Shorthand for getAll: getAll, ...
-    getAll,
-    create,
-    update,
-};
+// Shorthand for getAll: getAll, ...
+export default { getAll, create, update };
