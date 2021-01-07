@@ -17,4 +17,9 @@ const destroy = async id => {
     return request;
 };
 
-export default { getAll, post, destroy };
+const update = async (id, newObject) => {
+    const request = await axios.put(`${baseUrl}/${id}`, newObject);
+    return request.data;
+};
+
+export default { getAll, post, destroy, update };
