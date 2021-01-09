@@ -53,5 +53,11 @@ const Notification = ({ message }) => {
     return <div className="notice">{message}</div>;
 };
 
+const ErrorMessage = ({ message }) => {
+    if (message === null) return null;
+
+    return <div className="error">{message}</div>;
+};
+
 export default Persons;
-export { Filter, Form, Notification };
+export { Filter, Form, Notification, ErrorMessage };

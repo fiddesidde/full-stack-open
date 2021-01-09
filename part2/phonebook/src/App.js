@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Persons, { Form, Filter, Notification } from './components/Helpers';
+import Persons, {
+    Form,
+    Filter,
+    Notification,
+    ErrorMessage,
+} from './components/Helpers';
 import personService from './services/persons';
 
 const App = () => {
@@ -7,7 +12,8 @@ const App = () => {
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
-    const [notice, setNotice] = useState('Welcome');
+    const [notice, setNotice] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     // useEffect(() => {
     //     axios.get('http://localhost:3001/persons').then(res => {
@@ -42,13 +48,26 @@ const App = () => {
                 personService
                     .update(changedPerson.id, changedPerson)
                     .then(returnedPerson => {
-                        console.log(returnedPerson);
-                        console.log(persons);
                         setPersons(
                             persons.map(person =>
                                 person.id !== returnedPerson.id
                                     ? person
                                     : returnedPerson
+                            )
+                        );
+                        setNotice(`'${returnedPerson.name}' was updated`);
+                        setTimeout(() => setNotice(null), 5000);
+                    })
+                    .catch(err => {
+                        console.log(err);
+
+                        setErrorMessage(
+                            `'${changedPerson.name}' has already been removed from the server`
+                        );
+                        setTimeout(() => setErrorMessage(null), 5000);
+                        setPersons(
+                            persons.filter(
+                                person => person.id !== changedPerson.id
                             )
                         );
                     });
@@ -60,7 +79,7 @@ const App = () => {
             setPersons(persons.concat(returnedPerson));
             setNewName('');
             setNewNumber('');
-            setNotice(`'${returnedPerson.name} was created`);
+            setNotice(`'${returnedPerson.name}' was created`);
             setTimeout(() => setNotice(null), 5000);
         });
     };
@@ -92,6 +111,7 @@ const App = () => {
         <>
             <h1>Phonebook</h1>
             <Notification message={notice} />
+            <ErrorMessage message={errorMessage} />
             <Filter filter={filter} handle={handleFilterChange} />
             <h2>Add person</h2>
             <Form
@@ -108,6 +128,3 @@ const App = () => {
 };
 
 export default App;
-
-// setErrorMessage(`Note '${note.content} was already removed from the server`);
-// setTimeout(() => setErrorMessage(null), 5000);
