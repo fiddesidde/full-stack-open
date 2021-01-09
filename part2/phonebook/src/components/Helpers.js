@@ -47,5 +47,11 @@ const Form = props => {
     );
 };
 
+const Notification = ({ message }) => {
+    if (message === null) return null;
+
+    return <div className="notice">{message}</div>;
+};
+
 export default Persons;
-export { Filter, Form };
+export { Filter, Form, Notification };

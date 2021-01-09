@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Persons, { Form, Filter } from './components/Helpers';
+import Persons, { Form, Filter, Notification } from './components/Helpers';
 import personService from './services/persons';
 
 const App = () => {
@@ -7,6 +7,7 @@ const App = () => {
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
+    const [notice, setNotice] = useState('Welcome');
 
     // useEffect(() => {
     //     axios.get('http://localhost:3001/persons').then(res => {
@@ -39,6 +40,8 @@ const App = () => {
             setPersons(persons.concat(returnedPerson));
             setNewName('');
             setNewNumber('');
+            setNotice(`'${returnedPerson.name} was created`);
+            setTimeout(() => setNotice(null), 5000);
         });
     };
 
@@ -65,6 +68,7 @@ const App = () => {
     return (
         <>
             <h1>Phonebook</h1>
+            <Notification message={notice} />
             <Filter filter={filter} handle={handleFilterChange} />
             <h2>Add person</h2>
             <Form
@@ -81,3 +85,6 @@ const App = () => {
 };
 
 export default App;
+
+// setErrorMessage(`Note '${note.content} was already removed from the server`);
+// setTimeout(() => setErrorMessage(null), 5000);
