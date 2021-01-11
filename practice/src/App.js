@@ -62,7 +62,7 @@ const App = () => {
             })
             .catch(err => {
                 setErrorMessage(
-                    `Note '${note.content} was already removed from the server`
+                    `Note '${note.content}' was already removed from the server`
                 );
                 setTimeout(() => setErrorMessage(null), 5000);
                 setNotes(notes.filter(n => n.id !== id));
