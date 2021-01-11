@@ -15,21 +15,17 @@ const requestLogger = (req, res, next) => {
     next();
 };
 
-const unknownEndpoint = (req, res) => {
-    res.status(404).send({ error: 'unknown endpoint' });
-};
-
+app.use(express.static('build'));
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
-app.use(express.static('build'));
 
 app.get('/api/notes', async (req, res) => {
     const notes = await Note.find({});
     res.json(notes);
 });
 
-app.get('/api/notes/:id', async (req, res) => {
+app.get('/api/notes/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
         const note = await Note.findById(id);
@@ -39,15 +35,18 @@ app.get('/api/notes/:id', async (req, res) => {
             res.status(404).end();
         }
     } catch (error) {
-        console.log(error);
-        res.status(400).send({ error: 'malformatted id' });
+        next(error);
     }
 });
 
-app.delete('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    notes = notes.filter(note => note.id !== id);
-    res.status(204).end();
+app.delete('/api/notes/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await Note.findByIdAndRemove(id);
+        res.status(204).end();
+    } catch (error) {
+        next(error);
+    }
 });
 
 app.post('/api/notes', async (req, res) => {
@@ -64,7 +63,39 @@ app.post('/api/notes', async (req, res) => {
     res.json(note);
 });
 
+app.put('/api/notes/:id', async (req, res, next) => {
+    try {
+        const { content, important } = req.body;
+        const { id } = req.params;
+
+        const note = {
+            content,
+            important,
+        };
+
+        const updatedNote = await Note.findByIdAndUpdate(id, note, {
+            new: true,
+        });
+        res.json(updatedNote);
+    } catch (error) {
+        next(error);
+    }
+});
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' });
+};
 app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message);
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' });
+    }
+    next(error);
+};
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
