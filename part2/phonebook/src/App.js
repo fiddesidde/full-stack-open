@@ -71,13 +71,19 @@ const App = () => {
             number: newNumber,
         };
 
-        personService.post(personObj).then(returnedPerson => {
-            setPersons(persons.concat(returnedPerson));
-            setNewName('');
-            setNewNumber('');
-            setNotice(`'${returnedPerson.name}' was created`);
-            setTimeout(() => setNotice(null), 5000);
-        });
+        personService
+            .post(personObj)
+            .then(returnedPerson => {
+                setPersons(persons.concat(returnedPerson));
+                setNewName('');
+                setNewNumber('');
+                setNotice(`'${returnedPerson.name}' was created`);
+                setTimeout(() => setNotice(null), 5000);
+            })
+            .catch(error => {
+                setErrorMessage(error.response.data.error);
+                setTimeout(() => setErrorMessage(null), 5000);
+            });
     };
 
     const deletePerson = id => {
