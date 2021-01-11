@@ -121,7 +121,7 @@ dist
 /coverage
 
 # production
-/build
+/practice/build
 
 # misc
 .DS_Store
