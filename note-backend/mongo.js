@@ -45,7 +45,7 @@ const Note = mongoose.model('Note', noteSchema);
 // });
 
 const logNotes = async () => {
-    notes = await Note.find({});
+    const notes = await Note.find({});
     console.log(notes);
     mongoose.connection.close();
 };
