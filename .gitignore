@@ -122,6 +122,7 @@ dist
 
 # production
 /practice/build
+*/phonebook/build
 
 # misc
 .DS_Store
