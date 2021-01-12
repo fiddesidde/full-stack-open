@@ -45,7 +45,7 @@ describe('most', () => {
         const result = listHelper.favoriteBlog(blogs);
         expect(result).toEqual(topblog);
     });
-    test('blogs from an author returns that author', () => {
+    test('posted blogs returns that author', () => {
         const mostAuthor = {
             author: 'Robert C. Martin',
             blogs: 3,
