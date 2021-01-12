@@ -1,9 +1,11 @@
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+require('dotenv').config();
 
-const PORT = process.env.PORT || 3001;
-const DB_URL = process.env.DB_URL;
+const PORT = process.env.PORT;
+let DB_URL = process.env.DB_URL;
+
+if (process.env.NODE_ENV === 'test') {
+    DB_URL = process.env.TEST_DB_URL;
+}
 
 module.exports = {
     DB_URL,
