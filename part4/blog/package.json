@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest --verbose",
-        "start": "node index.js",
-        "dev": "nodemon index.js"
+        "test": "NODE_ENV=test jest --verbose --runInBand",
+        "start": "NODE_ENV=production node index.js",
+        "dev": "NODE_ENV=development nodemon index.js"
     },
     "author": "Fredrik Mellberg",
     "license": "ISC",
@@ -18,7 +18,8 @@
     },
     "devDependencies": {
         "jest": "^26.6.3",
-        "nodemon": "^2.0.6"
+        "nodemon": "^2.0.6",
+        "supertest": "^6.0.1"
     },
     "jest": {
         "testEnvironment": "node"

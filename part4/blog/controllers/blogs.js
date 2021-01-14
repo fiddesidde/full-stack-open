@@ -7,7 +7,10 @@ blogsRouter.get('/', async (req, res) => {
 });
 
 blogsRouter.post('/', async (req, res) => {
-    const blog = new Blog(req.body);
+    if (!req.body.title || !req.body.url)
+        return res.status(400).json({ error: 'Title/url is required' });
+    const { title, author, url, likes } = req.body;
+    const blog = new Blog({ title, author, url, likes: likes || 0 });
     result = await blog.save();
     res.status(201).json(result);
 });

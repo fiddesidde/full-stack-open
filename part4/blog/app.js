@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const blogsRouter = require('./controllers/blogs');
 const { DB_URL } = require('./utils/config');
 
@@ -15,7 +15,7 @@ mongoose.connect(DB_URL, {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'error connecting to MongoDB:'));
 db.once('open', () => {
-    console.info('Connected to MongoDB');
+    console.log('Connected to MongoDB');
 });
 
 app.use(cors());
