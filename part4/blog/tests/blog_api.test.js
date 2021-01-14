@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const helper = require('./test_helpers');
-const app = require('../app');
-const api = supertest(app);
 const Blog = require('../models/blog');
+const app = require('../app');
+
+const api = supertest(app);
 
 beforeEach(async () => {
     await Blog.deleteMany({});
