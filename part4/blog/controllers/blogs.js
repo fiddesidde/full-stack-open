@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (req, res) => {
     const blogs = await Blog.find({}).populate('user', {
@@ -10,26 +11,30 @@ blogsRouter.get('/', async (req, res) => {
     res.json(blogs);
 });
 
-blogsRouter.post('/', async (req, res) => {
-    if (!req.body.title || !req.body.url)
-        return res.status(400).json({ error: 'Title/url is required' });
+blogsRouter.post('/', async (req, res, next) => {
     const { title, author, url, likes } = req.body;
+    try {
+        // const token = getTokenFrom(req);
+        const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-    const users = await User.find({});
-    const user = users[0];
+        const user = await User.findById(decodedToken.id);
 
-    const blog = new Blog({
-        title,
-        author,
-        url,
-        likes: likes || 0,
-        user: user.id,
-    });
-    const savedBlog = await blog.save();
-    user.blogs = user.blogs.concat(savedBlog._id);
-    await user.save();
+        const blog = new Blog({
+            title,
+            author,
+            url,
+            likes: likes || 0,
+            user: user.id,
+        });
 
-    res.status(201).json(savedBlog);
+        const savedBlog = await blog.save();
+        user.blogs = user.blogs.concat(savedBlog._id);
+        await user.save();
+
+        res.status(201).json(savedBlog);
+    } catch (error) {
+        next(error);
+    }
 });
 
 blogsRouter.delete('/:id', async (req, res) => {

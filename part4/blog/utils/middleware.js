@@ -12,9 +12,17 @@ const errorHandler = (error, req, res, next) => {
     } else if (error.name === 'ValidationError') {
         return res.status(400).json({ error: error.message });
     } else if (error.name === 'JsonWebTokenError') {
-        return res.status(401).json({ error: 'invalid token' });
+        return res.status(401).json({ error: 'invalid authorization token' });
     }
     next(error);
 };
 
-module.exports = { unknownEndpoint, errorHandler };
+const getTokenFrom = (req, res, next) => {
+    const auth = req.get('authorization');
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+        req.token = auth.substring(7);
+    }
+    next();
+};
+
+module.exports = { unknownEndpoint, errorHandler, getTokenFrom };
