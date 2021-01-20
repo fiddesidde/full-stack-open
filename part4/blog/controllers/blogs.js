@@ -13,32 +13,34 @@ blogsRouter.get('/', async (req, res) => {
 
 blogsRouter.post('/', async (req, res, next) => {
     const { title, author, url, likes } = req.body;
-    try {
-        // const token = getTokenFrom(req);
-        const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-        const user = await User.findById(decodedToken.id);
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
-        const blog = new Blog({
-            title,
-            author,
-            url,
-            likes: likes || 0,
-            user: user.id,
-        });
+    const user = await User.findById(decodedToken.id);
 
-        const savedBlog = await blog.save();
-        user.blogs = user.blogs.concat(savedBlog._id);
-        await user.save();
+    const blog = new Blog({
+        title,
+        author,
+        url,
+        likes: likes || 0,
+        user: user.id,
+    });
 
-        res.status(201).json(savedBlog);
-    } catch (error) {
-        next(error);
-    }
+    const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog._id);
+    await user.save();
+
+    res.status(201).json(savedBlog);
 });
 
-blogsRouter.delete('/:id', async (req, res) => {
-    await Blog.findByIdAndDelete(req.params.id);
+blogsRouter.delete('/:id', async (req, res, next) => {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
+    const blog = await Blog.findById(req.params.id);
+    if (blog.user.toString() === decodedToken.id) {
+        await Blog.findByIdAndDelete(req.params.id);
+    } else {
+        res.status(401).json({ error: 'invalid authorization token' });
+    }
     res.status(204).end();
 });
 

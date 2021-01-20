@@ -30,12 +30,8 @@ usersRouter.post('/', async (req, res, next) => {
         name,
         passwordHash,
     });
-    try {
-        const savedUser = await user.save();
-        res.json(savedUser);
-    } catch (error) {
-        next(error);
-    }
+    const savedUser = await user.save();
+    res.json(savedUser);
 });
 
 module.exports = usersRouter;
