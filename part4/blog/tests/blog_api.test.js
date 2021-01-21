@@ -8,12 +8,23 @@ const app = require('../app');
 
 const api = supertest(app);
 
+let loggedInToken = '';
+beforeAll(async () => {
+    const res = await api.post('/api/login').send({
+        username: 'root',
+        password: 'sekret',
+    });
+    loggedInToken = res.body.token;
+});
+
 beforeEach(async () => {
     await Blog.deleteMany({});
 
     for (let blog of helper.initialBlogs) {
-        let blogObject = new Blog(blog);
-        await blogObject.save();
+        await api
+            .post('/api/blogs')
+            .auth(loggedInToken, { type: 'bearer' })
+            .send(blog);
     }
 });
 
@@ -48,9 +59,9 @@ describe('addition of a new blog', () => {
             url: 'http://www.google.com',
             likes: 5,
         };
-
         await api
             .post('/api/blogs')
+            .auth(loggedInToken, { type: 'bearer' })
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/);
@@ -69,7 +80,10 @@ describe('addition of a new blog', () => {
             url: 'http://www.google.com',
         };
 
-        await api.post('/api/blogs').send(newBlog);
+        await api
+            .post('/api/blogs')
+            .auth(loggedInToken, { type: 'bearer' })
+            .send(newBlog);
 
         const blogsAtEnd = await helper.blogsInDb();
         expect(blogsAtEnd[2].likes).toEqual(0);
@@ -81,7 +95,21 @@ describe('addition of a new blog', () => {
             likes: 5,
         };
 
-        await api.post('/api/blogs').send(newBlog).expect(400);
+        await api
+            .post('/api/blogs')
+            .auth(loggedInToken, { type: 'bearer' })
+            .send(newBlog)
+            .expect(400);
+    });
+    test('fails with status code 401 if token not provided', async () => {
+        const newBlog = {
+            title: 'Gymma',
+            url: 'http://www.google.com',
+            author: 'Ray Reddington',
+            likes: 5,
+        };
+
+        await api.post('/api/blogs').send(newBlog).expect(401);
     });
 });
 
@@ -90,7 +118,10 @@ describe('deletion of a blog', () => {
         const blogsAtStart = await helper.blogsInDb();
         const blogToDelete = blogsAtStart[0];
 
-        await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .auth(loggedInToken, { type: 'bearer' })
+            .expect(204);
 
         const blogsAtEnd = await helper.blogsInDb();
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
@@ -126,7 +157,7 @@ describe('when there is initially one user in db', () => {
     beforeEach(async () => {
         await User.deleteMany({});
 
-        const passwordHash = await bcrypt.hash('sekret', 10);
+        const passwordHash = await bcrypt.hash('sekret', 6);
         const user = new User({ username: 'root', passwordHash });
 
         await user.save();
