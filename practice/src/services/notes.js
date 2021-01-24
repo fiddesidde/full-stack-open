@@ -1,20 +1,31 @@
 import axios from 'axios';
 const baseUrl = '/api/notes';
 
-const getAll = () => {
-    const request = axios.get(baseUrl);
-    return request.then(res => res.data);
+let token = null;
+
+const setToken = newToken => {
+    token = `bearer ${newToken}`;
 };
 
-const create = newObject => {
-    const request = axios.post(baseUrl, newObject);
-    return request.then(res => res.data);
+const getAll = async () => {
+    const res = await axios.get(baseUrl);
+    return res.data;
 };
 
-const update = (id, newObject) => {
-    const request = axios.put(`${baseUrl}/${id}`, newObject);
-    return request.then(res => res.data);
+const create = async newObject => {
+    const config = {
+        headers: { Authorization: token },
+    };
+
+    const res = await axios.post(baseUrl, newObject, config);
+    return res.data;
+};
+
+const update = async (id, newObject) => {
+    const res = await axios.put(`${baseUrl}/${id}`, newObject);
+    return res.data;
 };
 
 // Shorthand for getAll: getAll, ...
-export default { getAll, create, update };
+const things = { getAll, create, update, setToken };
+export default things;
