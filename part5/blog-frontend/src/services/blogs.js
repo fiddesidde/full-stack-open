@@ -3,8 +3,8 @@ const baseUrl = '/api/blogs';
 
 let token = null;
 
-const setToken = token => {
-    token = `bearer ${token}`;
+const setToken = newToken => {
+    token = `bearer ${newToken}`;
 };
 
 const getAll = async () => {
