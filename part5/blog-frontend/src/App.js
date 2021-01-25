@@ -26,12 +26,19 @@ const App = () => {
                 password,
             });
 
+            window.localStorage.setItem('blogAppUser', JSON.stringify(user));
+            blogService.setToken(user.token);
             setUser(user);
             setUsername('');
             setPassword('');
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleLogout = () => {
+        window.localStorage.removeItem('blogAppUser');
+        setUser(null);
     };
 
     return (
@@ -47,7 +54,12 @@ const App = () => {
             ) : (
                 <div>
                     <h2>blogs</h2>
-                    <p>{user.name} logged in</p>
+                    <p>
+                        {user.name} logged in{' '}
+                        <button type="button" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </p>
                     <div>
                         {blogs.map(blog => (
                             <Blog key={blog.id} blog={blog} />
