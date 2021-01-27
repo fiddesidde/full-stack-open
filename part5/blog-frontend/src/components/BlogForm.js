@@ -67,13 +67,3 @@ const BlogForm = ({ createBlog }) => {
 };
 
 export default BlogForm;
-
-// const logForm = {
-//     handleSubmit,
-//     handleTitleChange,
-//     handleAuthorChange,
-//     handleUrlChange,
-//     title,
-//     author,
-//     url,
-// };

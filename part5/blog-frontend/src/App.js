@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
+import Togglable from './components/Tooglable';
 import { Notification, ErrorMessage } from './components/Message';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -13,8 +14,8 @@ const App = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
     const [notice, setNotice] = useState(null);
-    const [loginVisible, setLoginVisible] = useState(false);
-    const [createVisible, setCreateVisible] = useState(false);
+
+    const blogFormRef = useRef();
 
     useEffect(() => {
         const getBlogs = async () => {
@@ -65,6 +66,7 @@ const App = () => {
         try {
             const res = await blogService.create(blogObject);
             setBlogs(blogs.concat(res));
+            blogFormRef.current.toggleVisibility();
             setNotice(`'${res.title}' succesfully added`);
             setTimeout(() => {
                 setNotice(null);
@@ -77,55 +79,23 @@ const App = () => {
         }
     };
 
-    const loginForm = () => {
-        const hideWhenVisible = { display: loginVisible ? 'none' : '' };
-        const showWhenVisible = { display: loginVisible ? '' : 'none' };
+    const loginForm = () => (
+        <Togglable buttonLabel="login">
+            <LoginForm
+                username={username}
+                password={password}
+                handleUsernameChange={({ target }) => setUsername(target.value)}
+                handlePasswordChange={({ target }) => setPassword(target.value)}
+                handleSubmit={handleLogin}
+            />
+        </Togglable>
+    );
 
-        return (
-            <div>
-                <div style={hideWhenVisible}>
-                    <button onClick={() => setLoginVisible(true)}>login</button>
-                </div>
-                <div style={showWhenVisible}>
-                    <LoginForm
-                        username={username}
-                        password={password}
-                        handleUsernameChange={({ target }) =>
-                            setUsername(target.value)
-                        }
-                        handlePasswordChange={({ target }) =>
-                            setPassword(target.value)
-                        }
-                        handleSubmit={handleLogin}
-                    />
-                    <button onClick={() => setLoginVisible(false)}>
-                        cancel
-                    </button>
-                </div>
-            </div>
-        );
-    };
-
-    const blogForm = () => {
-        const hideWhenVisible = { display: createVisible ? 'none' : '' };
-        const showWhenVisible = { display: createVisible ? '' : 'none' };
-
-        return (
-            <div>
-                <div style={hideWhenVisible}>
-                    <button onClick={() => setCreateVisible(true)}>
-                        new blog?
-                    </button>
-                </div>
-                <div style={showWhenVisible}>
-                    <BlogForm createBlog={addBlog} />
-                    <button onClick={() => setCreateVisible(false)}>
-                        cancel
-                    </button>
-                </div>
-            </div>
-        );
-    };
+    const blogForm = () => (
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+        </Togglable>
+    );
 
     return (
         <>
