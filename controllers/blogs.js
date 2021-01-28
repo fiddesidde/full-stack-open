@@ -56,7 +56,10 @@ blogsRouter.put('/:id', async (req, res) => {
             {
                 new: true,
             }
-        );
+        ).populate('user', {
+            username: 1,
+            name: 1,
+        });
         res.json(result);
     } else {
         res.status(401).json({ error: 'invalid authorization token' });
