@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
+// import blogService from '../services/blogs';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
     const blogStyle = {
         paddingTop: 5,
         paddingLeft: 2,
@@ -21,13 +21,11 @@ const Blog = ({ blog }) => {
         setVisible(!visible);
     };
 
-    const likeBlogOnce = () => {
-        console.log(blog);
-        // const updatedLikes = (blog.likes += 1);
-        const updatedBlog = { ...blog, likes: (blog.likes += 1) };
-        console.log(updatedBlog);
-        // blogService.updateLike(blog);
-        // skicka det färdiga objectet till blogService.update()
+    const likeBlogOnce = event => {
+        event.preventDefault();
+
+        const updatedBlogObject = { ...blog, likes: (blog.likes += 1) };
+        updateBlog(updatedBlogObject);
     };
 
     return (

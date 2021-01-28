@@ -79,6 +79,14 @@ const App = () => {
         }
     };
 
+    const updateBlog = async updatedBlogObject => {
+        const res = await blogService.update(updatedBlogObject);
+        const newBlogArray = blogs.map(blog =>
+            blog.id === res.id ? res : blog
+        );
+        setBlogs(newBlogArray);
+    };
+
     const loginForm = () => (
         <Togglable buttonLabel="login">
             <LoginForm
@@ -115,7 +123,11 @@ const App = () => {
                     <div>{blogForm()}</div>
                     <div>
                         {blogs.map(blog => (
-                            <Blog key={blog.id} blog={blog} />
+                            <Blog
+                                key={blog.id}
+                                blog={blog}
+                                updateBlog={updateBlog}
+                            />
                         ))}
                     </div>
                 </div>

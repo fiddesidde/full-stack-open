@@ -21,12 +21,22 @@ const create = async blogObject => {
     return res.data;
 };
 
-const update = blogObject => {
-    console.log(blogObject);
+const update = async blogObject => {
+    const { likes, author, title, url, id } = blogObject;
+    const user = blogObject.user.id;
+    const body = {
+        user,
+        likes,
+        author,
+        title,
+        url,
+    };
+    const config = {
+        headers: { Authorization: token },
+    };
 
-    // console.log(updatedBlog);
-    // console.log(updatedBlog);
-    return null;
+    const res = await axios.put(`${baseUrl}/${id}`, body, config);
+    return res.data;
 };
 
 export default { getAll, create, setToken, update };
