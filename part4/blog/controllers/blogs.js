@@ -47,10 +47,20 @@ blogsRouter.delete('/:id', async (req, res, next) => {
 blogsRouter.put('/:id', async (req, res) => {
     const updatedBlog = { ...req.body };
 
-    const result = await Blog.findByIdAndUpdate(req.params.id, updatedBlog, {
-        new: true,
-    });
-    res.json(result);
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
+    const blog = await Blog.findById(req.params.id);
+    if (blog.user.toString() === decodedToken.id) {
+        const result = await Blog.findByIdAndUpdate(
+            req.params.id,
+            updatedBlog,
+            {
+                new: true,
+            }
+        );
+        res.json(result);
+    } else {
+        res.status(401).json({ error: 'invalid authorization token' });
+    }
 });
 
 module.exports = blogsRouter;
