@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 import BlogForm from './components/BlogForm';
-import Togglable from './components/Tooglable';
+import Togglable from './components/Togglable';
 import { Notification, ErrorMessage } from './components/Message';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import userService from './services/users';
 
 const App = () => {
     const [blogs, setBlogz] = useState([]);
@@ -16,6 +18,7 @@ const App = () => {
     const [notice, setNotice] = useState(null);
 
     const blogFormRef = useRef();
+    const signupFormRef = useRef();
 
     useEffect(() => {
         const getBlogs = async () => {
@@ -60,6 +63,28 @@ const App = () => {
         }
     };
 
+    const handleSignUp = async newUserObject => {
+        try {
+            const { username, password, name } = newUserObject;
+            const user = await userService.signup({
+                username,
+                password,
+                name,
+            });
+            signupFormRef.current.toggleVisibility();
+            setNotice(`'${user.username}' succesfully added`);
+            setTimeout(() => {
+                setNotice(null);
+            }, 5000);
+        } catch (error) {
+            console.log(error);
+            setErrorMessage(error);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
+        }
+    };
+
     const handleLogout = event => {
         event.preventDefault();
         window.localStorage.removeItem('blogAppUser');
@@ -91,6 +116,22 @@ const App = () => {
         setBlogs(newBlogArray);
     };
 
+    const deleteBlog = async blogToRemove => {
+        const { id, author, title } = blogToRemove;
+        const result = window.confirm(`Remove "${title}" by ${author}?`);
+        if (result) {
+            await blogService.remove(id);
+            const newBlogArray = blogs.filter(blog => blog.id !== id);
+            setBlogs(newBlogArray);
+        }
+    };
+
+    const signUpForm = () => (
+        <Togglable buttonLabel="signup" ref={signupFormRef}>
+            <SignupForm signUp={handleSignUp} />
+        </Togglable>
+    );
+
     const loginForm = () => (
         <Togglable buttonLabel="login">
             <LoginForm
@@ -114,7 +155,10 @@ const App = () => {
             <Notification message={notice} />
             <ErrorMessage message={errorMessage} />
             {user === null ? (
-                loginForm()
+                <div>
+                    <div>{loginForm()}</div>
+                    <div style={{ paddingTop: 5 }}>{signUpForm()}</div>
+                </div>
             ) : (
                 <div>
                     <h2>blogs</h2>
@@ -131,6 +175,8 @@ const App = () => {
                                 key={blog.id}
                                 blog={blog}
                                 updateBlog={updateBlog}
+                                removeBlog={deleteBlog}
+                                user={user}
                             />
                         ))}
                     </div>

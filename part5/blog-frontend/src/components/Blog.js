@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-// import blogService from '../services/blogs';
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
     const blogStyle = {
         paddingTop: 5,
         paddingLeft: 2,
@@ -17,6 +16,11 @@ const Blog = ({ blog, updateBlog }) => {
     const hideWhenVisible = { display: visible ? 'none' : '' };
     const showWhenVisible = { display: visible ? '' : 'none' };
 
+    let showIfUser = { display: '' };
+    if (user.username !== blog.user.username) {
+        showIfUser = { display: 'none' };
+    }
+
     const toggleVisibility = () => {
         setVisible(!visible);
     };
@@ -26,6 +30,11 @@ const Blog = ({ blog, updateBlog }) => {
 
         const updatedBlogObject = { ...blog, likes: (blog.likes += 1) };
         updateBlog(updatedBlogObject);
+    };
+
+    const deleteBlog = event => {
+        event.preventDefault();
+        removeBlog(blog);
     };
 
     return (
@@ -44,6 +53,9 @@ const Blog = ({ blog, updateBlog }) => {
                     <button onClick={likeBlogOnce}>like</button>
                 </div>
                 <div>Author: {blog.author}</div>
+                <div style={showIfUser}>
+                    <button onClick={deleteBlog}>remove</button>
+                </div>
             </div>
         </div>
     );
