@@ -60,3 +60,8 @@
 .title {
     font-weight: 600;
 }
+
+.content {
+    max-width: 500px;
+    margin: auto;
+}

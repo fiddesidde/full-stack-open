@@ -98,7 +98,7 @@ const App = () => {
     );
 
     return (
-        <>
+        <div className="content">
             <Notification message={notice} />
             <ErrorMessage message={errorMessage} />
             {user === null ? (
@@ -120,7 +120,7 @@ const App = () => {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

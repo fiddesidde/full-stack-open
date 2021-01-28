@@ -21,4 +21,12 @@ const create = async blogObject => {
     return res.data;
 };
 
-export default { getAll, create, setToken };
+const update = blogObject => {
+    console.log(blogObject);
+
+    // console.log(updatedBlog);
+    // console.log(updatedBlog);
+    return null;
+};
+
+export default { getAll, create, setToken, update };
