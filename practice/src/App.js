@@ -52,6 +52,7 @@ const App = () => {
                 );
             })
             .catch(err => {
+                console.log(err);
                 setErrorMessage(
                     `Note '${note.content}' was already removed from the server`
                 );
