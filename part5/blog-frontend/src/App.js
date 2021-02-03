@@ -96,7 +96,7 @@ const App = () => {
             const res = await blogService.create(blogObject);
             setBlogs(blogs.concat(res));
             blogFormRef.current.toggleVisibility();
-            setNotice(`'${res.title}' succesfully added`);
+            setNotice(`'${res.title}' successfully added`);
             setTimeout(() => {
                 setNotice(null);
             }, 5000);
@@ -164,12 +164,16 @@ const App = () => {
                     <h2>blogs</h2>
                     <p>
                         {user.name} logged in{' '}
-                        <button type="button" onClick={handleLogout}>
+                        <button
+                            id="logout-btn"
+                            type="button"
+                            onClick={handleLogout}
+                        >
                             Logout
                         </button>
                     </p>
                     <div>{blogForm()}</div>
-                    <div>
+                    <div id="blog-list">
                         {blogs.map(blog => (
                             <Blog
                                 key={blog.id}
