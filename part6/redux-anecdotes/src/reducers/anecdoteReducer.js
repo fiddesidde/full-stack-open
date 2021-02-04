@@ -31,6 +31,8 @@ const reducer = (state = initialState, action) => {
                 votes: anecToUpVote.votes + 1,
             };
             return state.map(anec => (anec.id !== id ? anec : upVotedAnecdote));
+        case 'CREATE':
+            return [...state, action.data];
         default:
             return state;
     }
@@ -40,6 +42,13 @@ export const voteAnecdote = id => {
     return {
         type: 'VOTE',
         data: { id },
+    };
+};
+
+export const create = anecdote => {
+    return {
+        type: 'CREATE',
+        data: asObject(anecdote),
     };
 };
 
