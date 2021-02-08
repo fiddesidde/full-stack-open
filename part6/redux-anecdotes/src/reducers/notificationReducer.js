@@ -1,13 +1,13 @@
-const initialState = null;
+const testNotice = 'test notice!';
+
+const initialState = testNotice;
 
 const notificationReducer = (state = initialState, action) => {
     console.log('state now: ', state);
     console.log('action', action);
     switch (action.type) {
-        case 'VOTE':
-            return `You voted on "${action.data}" !`;
-        case 'HIDE':
-            return null;
+        case 'SHOW':
+            return action.data;
         default:
             return state;
     }
@@ -15,20 +15,8 @@ const notificationReducer = (state = initialState, action) => {
 
 export const showNotice = msg => {
     return {
-        type: 'VOTE',
+        type: 'SHOW',
         data: msg,
-    };
-};
-export const showCreateNotice = msg => {
-    return {
-        type: 'CREATE',
-        data: msg,
-    };
-};
-
-export const hideNotice = () => {
-    return {
-        type: 'HIDE',
     };
 };
 
