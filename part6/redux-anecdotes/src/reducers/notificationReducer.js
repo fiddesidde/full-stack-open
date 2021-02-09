@@ -1,35 +1,27 @@
 const notificationReducer = (state = null, action) => {
-    console.log('state now: ', state);
-    console.log('action', action);
     switch (action.type) {
-        case 'VOTE_NOTICE':
-            return `You voted on "${action.data}" !`;
-        case 'CREATE_NOTICE':
-            return `You created "${action.data}" !`;
-        case 'HIDE':
+        case 'SET_NOTICE':
+            return action.data;
+        case 'HIDE_NOTICE':
             return null;
         default:
             return state;
     }
 };
 
-export const votedNotice = anecdote => {
-    return {
-        type: 'VOTE_NOTICE',
-        data: anecdote.content,
-    };
-};
-
-export const createdNotice = content => {
-    return {
-        type: 'CREATE_NOTICE',
-        data: content,
+export const setNotice = (message, timeToShow) => {
+    return async dispatch => {
+        dispatch({
+            type: 'SET_NOTICE',
+            data: message,
+        });
+        setTimeout(() => dispatch({ type: 'HIDE_NOTICE' }), timeToShow * 1000);
     };
 };
 
 export const hideNotice = () => {
     return {
-        type: 'HIDE',
+        type: 'HIDE_NOTICE',
     };
 };
 
