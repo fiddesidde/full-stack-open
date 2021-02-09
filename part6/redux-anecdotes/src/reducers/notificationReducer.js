@@ -2,10 +2,10 @@ const notificationReducer = (state = null, action) => {
     console.log('state now: ', state);
     console.log('action', action);
     switch (action.type) {
-        case 'VOTENOTICE':
+        case 'VOTE_NOTICE':
             return `You voted on "${action.data}" !`;
-        case 'CREATENOTICE':
-            return `You created ${action.data} !`;
+        case 'CREATE_NOTICE':
+            return `You created "${action.data}" !`;
         case 'HIDE':
             return null;
         default:
@@ -15,14 +15,14 @@ const notificationReducer = (state = null, action) => {
 
 export const votedNotice = anecdote => {
     return {
-        type: 'VOTENOTICE',
+        type: 'VOTE_NOTICE',
         data: anecdote.content,
     };
 };
 
 export const createdNotice = content => {
     return {
-        type: 'CREATENOTICE',
+        type: 'CREATE_NOTICE',
         data: content,
     };
 };
