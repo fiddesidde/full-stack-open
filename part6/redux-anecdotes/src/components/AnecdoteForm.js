@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { createAnecdote } from '../reducers/anecdoteReducer';
 import { createdNotice, hideNotice } from '../reducers/notificationReducer';
-import anecdoteService from '../services/anecdotes';
 
 const AnecdoteForm = () => {
     const dispatch = useDispatch();
@@ -13,18 +12,11 @@ const AnecdoteForm = () => {
         const content = event.target.anecdote.value;
         event.target.anecdote.value = '';
 
-        try {
-            const createdAnecdote = await anecdoteService.createAnecdote(
-                content
-            );
-            dispatch(createAnecdote(createdAnecdote));
-            dispatch(createdNotice(createdAnecdote.content));
-            setTimeout(() => {
-                dispatch(hideNotice());
-            }, 5000);
-        } catch (error) {
-            console.log(error);
-        }
+        dispatch(createAnecdote(content));
+        dispatch(createdNotice(content));
+        setTimeout(() => {
+            dispatch(hideNotice());
+        }, 5000);
     };
 
     return (
